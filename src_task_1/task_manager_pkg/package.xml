@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>task_manager_pkg</name>
+  <version>0.0.0</version>
+  <description>Task manager: orchestrates all sub-nodes in a 9-step sequence</description>
+  <maintainer email="reicom2025@todo.todo">reicom2025</maintainer>
+  <license>TODO</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>rospy</build_export_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <!-- runtime dependencies for rosrun calls -->
+  <exec_depend>auto_nav_goal_4_pkg</exec_depend>
+  <exec_depend>Grab_pkg</exec_depend>
+  <exec_depend>remove_back_pkg</exec_depend>
+  <exec_depend>auto_nav_goal_5_pkg</exec_depend>
+  <exec_depend>auto_bkhome_pkg</exec_depend>
+  <exec_depend>auto_charge_pkg</exec_depend>
+  <export>
+  </export>
+</package>

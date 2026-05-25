@@ -3,20 +3,24 @@
 #include <actionlib/client/simple_action_client.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <ar_pose/Track.h>
-#include <tf/transform_listener.h>
 
 // 创建服务客户端
 ros::ServiceClient relmove_client;
-ros::ServiceClient track_client;
+
+// 本次课程新增二次定位客户端
+ros::ServiceClient track_client; 
 
 // 定义 Action 客户端类型
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 MoveBaseClient* nav_client;
 
 bool set_ARtrack(int id, float dist){
-    // 等待服务上线
+    // 等待服务上线（超时10秒）
     ROS_INFO("等待服务 /track 启动...");
-    track_client.waitForExistence();
+    if (!track_client.waitForExistence(ros::Duration(10.0))) {
+        ROS_ERROR("服务 /track 连接超时！");
+        return false;
+    }
     ROS_INFO("服务已连接！");
     ar_pose::Track srv;
     srv.request.ar_id = id;
@@ -37,9 +41,12 @@ bool set_ARtrack(int id, float dist){
 }
 
 bool set_relmove(float x,float y,float theta){
-    // 等待服务上线
+    // 等待服务上线（超时10秒）
     ROS_INFO("等待服务 /relative_move 启动...");
-    relmove_client.waitForExistence();
+    if (!relmove_client.waitForExistence(ros::Duration(10.0))) {
+        ROS_ERROR("服务 /relative_move 连接超时！");
+        return false;
+    }
     ROS_INFO("服务已连接！");
     // 定义服务消息
     relative_move::SetRelativeMove srv;
@@ -64,10 +71,14 @@ bool set_relmove(float x,float y,float theta){
     }
 }
 
+
 bool navToGoal(double x, double y, double z, double w){
-    // 等待服务器连接成功
+    // 等待服务器连接成功（超时10秒）
     ROS_INFO("等待连接 move_base 服务器...");
-    nav_client->waitForServer();
+    if (!nav_client->waitForServer(ros::Duration(10.0))) {
+        ROS_ERROR("move_base 服务器连接超时！");
+        return false;
+    }
     ROS_INFO("连接成功！");
     nav_client->cancelAllGoals();
     ROS_WARN("已清空所有导航任务！");
@@ -135,49 +146,28 @@ bool navToGoal(double x, double y, double z, double w){
     return false;
 }
 
-bool get_transform(const std::string& parent_frame, const std::string& child_frame,
-                   tf::StampedTransform& transform) {
-    tf::TransformListener listener;
-    try {
-        listener.waitForTransform(parent_frame, child_frame, ros::Time(0), ros::Duration(10.0));
-        listener.lookupTransform(parent_frame, child_frame, ros::Time(0), transform);
-        return true;
-    } catch (tf::TransformException& ex) {
-        ROS_ERROR("获取TF变换失败: %s", ex.what());
-        return false;
-    }
-}
-
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
     setlocale(LC_CTYPE, "zh_CN.utf8");
-    ros::init(argc, argv, "auto_nav_node");
+    ros::init(argc, argv, "relocalization_node");
     ros::NodeHandle nh;
-
-    // 初始化服务客户端
     relmove_client = nh.serviceClient<relative_move::SetRelativeMove>("/relative_move");
     track_client = nh.serviceClient<ar_pose::Track>("/track");
     nav_client = new MoveBaseClient("move_base",true);
 
-    try {
-        if (!navToGoal(0.49384, 1.26898, 0, 1)) {
-            return -1;
-        }
-        if (!set_ARtrack(0, 0.4)) {
-            return -1;
-        }
-        if (!set_relmove(0.18, 0, 0)) {
-            return -1;
-        }
-
-        ros::Duration(1.0).sleep();
-
-        // if (!set_relmove(-0.18, 0, 0)) {
-        //     return -1;
-        // }
-
-    } catch (ros::Exception& e) {
-        ROS_ERROR("程序被中断：%s", e.what());
+    if (!navToGoal(0.3, 1.7499, 0.7, 0.7)){
+        return 1;
     }
-
+    if (!set_ARtrack(0,0.4)){
+        return 1;
+    }
+    if (!set_relmove(0.20,0,0)){
+        return 1;
+    }
+    ros::Duration(2.0).sleep();
+    if (!set_relmove(-0.2,0,0)){
+        return 1;
+    }
+    delete nav_client; // 程序结束释放资源
     return 0;
 }
