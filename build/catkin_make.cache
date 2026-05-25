@@ -1,2 +1,0 @@
-ar_tf_arm_5_pkg:arm_control_pkg:auto_bkhome_pkg:auto_charge_pkg:nav_goal_pkg:romove_pkg
--DCATKIN_DEVEL_PREFIX=/home/reicom2025/ros_workspace/devel -DCMAKE_INSTALL_PREFIX=/home/reicom2025/ros_workspace/install -G Unix Makefiles

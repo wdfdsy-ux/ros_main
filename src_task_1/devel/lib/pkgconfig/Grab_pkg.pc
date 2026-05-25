@@ -1,8 +1,0 @@
-prefix=/home/reicom2025/ros_workspace/src_task_1/devel
-
-Name: Grab_pkg
-Description: Description of Grab_pkg
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

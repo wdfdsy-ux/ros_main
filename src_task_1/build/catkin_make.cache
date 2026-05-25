@@ -1,2 +1,0 @@
-Grab_pkg:auto_bkhome_pkg:auto_nav_goal_4_pkg:auto_nav_goal_5_pkg
--DCATKIN_DEVEL_PREFIX=/home/reicom2025/ros_workspace/src_task_1/devel -DCMAKE_INSTALL_PREFIX=/home/reicom2025/ros_workspace/src_task_1/install -G Unix Makefiles

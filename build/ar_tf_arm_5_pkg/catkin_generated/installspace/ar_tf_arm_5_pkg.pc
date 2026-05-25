@@ -1,8 +1,0 @@
-prefix=/home/reicom2025/ros_workspace/install
-
-Name: ar_tf_arm_5_pkg
-Description: Description of ar_tf_arm_5_pkg
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

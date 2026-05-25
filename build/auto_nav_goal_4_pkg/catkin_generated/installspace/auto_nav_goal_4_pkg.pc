@@ -1,8 +1,0 @@
-prefix=/home/reicom2025/ros_workspace/install
-
-Name: auto_nav_goal_4_pkg
-Description: Description of auto_nav_goal_4_pkg
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

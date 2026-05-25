@@ -1,0 +1,19 @@
+# ROS build / devel
+build/
+devel/
+*/build/
+*/devel/
+
+# Catkin workspace marker
+.catkin_workspace
+*/.catkin_workspace
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Compiled
+*.o
+*.bin

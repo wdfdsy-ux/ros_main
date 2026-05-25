@@ -1,8 +1,0 @@
-prefix=/home/reicom2025/ros_workspace/install
-
-Name: arm_control_pkg
-Description: Description of arm_control_pkg
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
