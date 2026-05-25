@@ -17,3 +17,4 @@ devel/
 # Compiled
 *.o
 *.bin
+start_services.sh
