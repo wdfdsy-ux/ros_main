@@ -68,7 +68,7 @@ void arMarkerCallback(const ar_track_alvar_msgs::AlvarMarkers::ConstPtr& markers
             ROS_INFO("定位成功！已识别到AR标签 100");
         }
         // 检测货物标签 1~4
-        if (marker.id >= 1 && marker.id <= 4 && tag_100_detected && !cargo_scan_done) {
+        if (marker.id >= 1 && marker.id <= 9 && tag_100_detected && !cargo_scan_done) {
             if (cargo_ids_detected.find(marker.id) == cargo_ids_detected.end()) {
                 cargo_ids_detected.insert(marker.id);
                 ROS_INFO("检测到货物AR标签 ID=%d", marker.id);
@@ -123,7 +123,7 @@ int main(int argc, char** argv)
     }
 
     // ===== Step 5: 扫描货物标签 (ID: 1, 2, 3, 4) =====
-    ROS_INFO("===== Step 5: 扫描货物AR标签 (ID:1~4) =====");
+    ROS_INFO("===== Step 5: 扫描货物AR标签 (ID:1~9) =====");
     ros::Time scan_start = ros::Time::now();
     while (ros::ok() && (ros::Time::now() - scan_start).toSec() < 3.0) {
         ros::spinOnce();
@@ -132,7 +132,7 @@ int main(int argc, char** argv)
     cargo_scan_done = true;
 
     if (cargo_ids_detected.empty()) {
-        ROS_ERROR("识别失败：未检测到任何货物标签 (ID:1~4)");
+        ROS_ERROR("识别失败：未检测到任何货物标签 (ID:1~9)");
         safe_retract();
         return -1;
     }
@@ -175,11 +175,13 @@ int main(int argc, char** argv)
 
     // ===== Step 7: 抓取货物 =====
     ROS_INFO("===== Step 7: 抓取货物 =====");
-    // 下降到货物表面
-    arm_move(cargo_x, cargo_y, cargo_z_surface);
+    // 下降到货物正上方 15mm（不接触表面）
+    float pick_z = cargo_z_surface + 10.0f;
+    arm_move(cargo_x, cargo_y, pick_z);
     ros::Duration(1.0).sleep();
-    // 开启吸盘
+    // 开启吸盘（在15mm高度吸住货物）
     set_pump(true);
+    ros::Duration(0.5).sleep();
     // 抬起
     arm_move(cargo_x, cargo_y, tag_z);
 
